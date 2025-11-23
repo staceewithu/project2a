@@ -2,9 +2,31 @@ let readyStatus = document.querySelector('#readyStatus')
 let notReadyStatus = document.querySelector('#notReadyStatus')
 let myForm = document.querySelector('#myForm')
 let contentArea = document.querySelector('#contentArea')
-let formPopover = document.querySelector('#formPopover')
+let formDialog = document.querySelector('#formDialog')
 let createButton = document.querySelector('#createButton')
-let formHeading = document.querySelector('#formPopover h2')
+let formHeading = document.querySelector('#formDialog h2')
+
+let itemsCache = []
+
+// from chatgpt/vs code robot 1(start)
+const openButton = document.createElement('button')
+openButton.id = 'openButton'
+openButton.textContent = 'Open'
+openButton.style.display = 'none'
+
+createButton.insertAdjacentElement('beforebegin', openButton)
+
+const showRandomItem = () => {
+    if (!itemsCache || itemsCache.length === 0) return
+    const idx = Math.floor(Math.random() * itemsCache.length)
+    const item = itemsCache[idx]
+    contentArea.innerHTML = ''
+    const itemDiv = renderItem(item)
+    contentArea.appendChild(itemDiv)
+}
+
+openButton.addEventListener('click', showRandomItem)
+// from chatgpt/vs code robot 1(end)
 
 // Get form data and process each type of input
 // Prepare the data as JSON with a proper set of types
@@ -32,6 +54,12 @@ const getFormData = () => {
         else if (el.type === 'date') {
             json[el.name] = isEmpty ? null : new Date(value).toISOString()
         }
+        else if (!myForm.description.checkValidity()) {
+            alert('Please provide a description of at least 20 characters.')
+            return
+        }
+
+
     })
     return json
 }
@@ -44,7 +72,7 @@ myForm.addEventListener('submit', async event => {
     const data = getFormData()
     await saveItem(data)
     myForm.reset()
-    formPopover.hidePopover()
+    if (formDialog && typeof formDialog.close === 'function') formDialog.close()
 })
 
 
@@ -115,10 +143,10 @@ const editItem = (data) => {
     })
 
     // Update the heading to indicate edit mode
-    formHeading.textContent = '🐈 Edit Cat'
+    formHeading.textContent = 'Edit Message'
 
     // Show the popover
-    formPopover.showPopover()
+    if (formDialog && typeof formDialog.showModal === 'function') formDialog.showModal()
 }
 
 // Delete item
@@ -164,67 +192,31 @@ const calendarWidget = (date) => {
 
 }
 
-// Render a single item
+// Render a single Message item
 const renderItem = (item) => {
     const div = document.createElement('div')
     div.classList.add('item-card')
     div.setAttribute('data-id', item.id)
 
-    const template = /*html*/`  
+    const created = item.createdAt ? new Date(item.createdAt).toLocaleString() : ''
+
+    const template = /*html*/`
     <div class="item-heading">
-        <h3> ${item.name} </h3>
-        <div class="microchip-info">
-            <img src="./assets/chip.svg" /> ${item.microchip || '<i>???</i>'} 
-        </div>  
-    </div>
-    <div class="item-info"> 
-        <div class="item-icon" style="
-            background: linear-gradient(135deg, 
-            ${item.primaryColor} 0%, 
-            ${item.primaryColor} 40%, 
-            ${item.secondaryColor} 60%, 
-            ${item.secondaryColor} 100%); 
-        ">
-        </div> 
-        <div class="stats">
-            <div class="stat">
-                <span>Playfulness</span>
-                <meter max="10" min="0" value="${item.playfulness || 0}"></meter> 
-            </div>
-            <div class="stat">
-                <span>Appetite</span>
-                <meter max="10" min="0" value="${item.appetite || 0}"></meter> 
-            </div>
-        </div> 
-            
-         ${calendarWidget(item.birthDate)}
-    </div>
-        
-    <div class="item-info">  
-        <section class="breed" style="${item.breed ? '' : 'display:none;'}">  
-            <img src="./assets/ribbon.svg" />  ${item.breed}
-        </section>
-        <section class="food" style="${item.food ? '' : 'display:none;'}">
-             <img src="./assets/${item.food}.svg" /> <span>${item.food} food</span>
-        </section> 
-        <section class="adoption">
-            <img src="./assets/${item.isAdopted ? 'adopted' : 'paw'}.svg" />
-            ${item.isAdopted ? 'Adopted' : 'Available'}
-        </section> 
+        <h3>${item.ageGroup || '—'}</h3>
+        <div class="meta">${item.gender || '—'} • ${created}</div>
     </div>
 
-    <section class="description" style="${item.description ? '' : 'display:none;'}">  
-        <p>${item.description}</p>
+    <section class="description" style="${item.description ? '' : 'display:none;'}">
+        <p>${item.description || ''}</p>
     </section>
 
-        
-           
-        <div class="item-actions">
-            <button class="edit-btn">Edit</button>
-            <button class="delete-btn">Delete</button>
-        </div>
+    <div class="item-actions">
+        <button class="edit-btn">Edit</button>
+        <button class="delete-btn">Delete</button>
+    </div>
     `
-    div.innerHTML = DOMPurify.sanitize(template);
+
+    div.innerHTML = DOMPurify.sanitize(template)
 
     // Add event listeners to buttons
     div.querySelector('.edit-btn').addEventListener('click', () => editItem(item))
@@ -245,16 +237,18 @@ const getData = async () => {
             const data = await response.json()
             console.log('Fetched data:', data)
 
-            if (data.length == 0) {
+            // Cache the fetched items so the Open button can pick one at random
+            itemsCache = Array.isArray(data) ? data : []
+
+            if (itemsCache.length == 0) {
                 contentArea.innerHTML = '<p><i>No data found in the database.</i></p>'
+                openButton.style.display = 'none'
                 return
             }
             else {
-                contentArea.innerHTML = ''
-                data.forEach(item => {
-                    const itemDiv = renderItem(item)
-                    contentArea.appendChild(itemDiv)
-                })
+                // Show a single random item initially
+                openButton.style.display = 'inline-block'
+                showRandomItem()
             }
         }
         else {
@@ -272,10 +266,26 @@ const getData = async () => {
 }
 
 // Revert to the default form title on reset
-myForm.addEventListener('reset', () => formHeading.textContent = '🐈 Share a Cat')
+myForm.addEventListener('reset', () => formHeading.textContent = 'Drop a Drift Bottle')
 
-// Reset the form when the create button is clicked. 
-createButton.addEventListener('click', myForm.reset())
+// Open the form popover for creating a new Message
+createButton.addEventListener('click', () => {
+    myForm.reset()
+    formHeading.textContent = 'Drop a Drift Bottle'
+    if (formDialog && typeof formDialog.showModal === 'function') formDialog.showModal()
+})
+
+
+// Wire cancel button (closes the dialog)
+const cancelButton = document.querySelector('#cancelButton')
+if (cancelButton) {
+    cancelButton.addEventListener('click', () => {
+        if (formDialog && typeof formDialog.close === 'function') formDialog.close()
+    })
+}
 
 // Load initial data
 getData()
+
+
+
