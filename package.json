@@ -14,7 +14,10 @@
   "type": "module",
   "dependencies": {
     "@prisma/client": "^6.18.0",
-    "express": "^5.1.0"
+    "bcrypt": "^6.0.0",
+    "express": "^5.1.0",
+    "express-openid-connect": "^2.19.3",
+    "express-session": "^1.18.2"
   },
   "devDependencies": {
     "prisma": "^6.18.0"

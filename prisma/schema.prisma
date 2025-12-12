@@ -7,10 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  nickname  String?
+
+  messages  Message[]            // 这个用户写过的所有漂流瓶
+}
+
 model Message {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   ageGroup    String
   gender      String
   description String
   createdAt   DateTime @default(now())
+
+  // 可选的作者（未登录时代的老数据也能兼容）
+  user        User?    @relation(fields: [userEmail], references: [email])
+  userEmail   String?
 }

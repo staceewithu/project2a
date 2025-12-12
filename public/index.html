@@ -12,8 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 
-  <!--  DOMPurify cleans up HTML to prevent XSS attacks
-  https://www.jsdelivr.com/package/npm/dompurify  -->
+  <!--  DOMPurify cleans up HTML to prevent XSS attacks -->
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.0/dist/purify.min.js"></script>
 
 </head>
@@ -22,6 +21,7 @@
   <header>
     <h1>Drift Bottle</h1>
   </header>
+
   <section id="status">
     <h4 id="readyStatus">Your drift bottle is now ready to be cast into the sea.</h4>
     <h4 id="notReadyStatus">Your drift bottle cannot be released into the sea at this time. Please check your connection
@@ -29,13 +29,32 @@
     </h4>
   </section>
 
+
+
+  <!-- 🔐 登录 / 注册 面板 -->
+  <section id="authPanel">
+    <p id="authStatus">You are browsing as a guest.</p>
+    <div class="auth-forms">
+      <button id="loginButton" type="button">Login</button>
+      <button id="logoutButton" type="button">Logout</button>
+    </div>
+  </section>
+
   <main>
     <h2>🐚You've found a message in a bottle...</h2>
     <section id="contentArea"></section>
   </main>
 
-  <button id="createButton">Drop a Drift Bottle</button>
-  <!--from chatgpt/vs code robot 1(start) -->
+      <button id="createButton">Drop a Drift Bottle</button>
+
+  <!-- 🧾 登录用户的历史记录 -->
+  <section id="history">
+    <h2 id="historyText">🐚Your Drift Bottle History🐚</h2>
+    <div id="historyArea"></div>
+  </section>
+
+
+
   <dialog id="formDialog">
     <div class="dialog-header">
       <h2>Drop a Drift Bottle</h2>
@@ -43,7 +62,6 @@
     <form id="myForm">
       <!-- Hidden field to store ID for updates -->
       <input type="hidden" name="id" id="id" />
-      <!--from chatgpt/vs code robot 1(end) -->
 
       <fieldset class="filters">
         <div class="field">
@@ -94,10 +112,6 @@
       <button id="cancelButton" class="cancel" type="button">Cancel</button>
     </div>
   </dialog>
-
-
-
-
 
   <script src="script.js" type="module"></script>
 

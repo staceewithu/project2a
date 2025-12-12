@@ -13,21 +13,38 @@ body {
     background-color: rgb(238, 227, 144)
 }
 
+#authStatus {
+    font-size: 1.25rem;
+    margin: 1rem;
+    color: #ffffff;
+    font-family: "Jost", sans-serif;
+    font-weight: bold;
+}
+
 h1 {
     font-size: 3rem;
     color: #ffffff;
     margin-top: 80px;
+    margin-bottom: 0px;
 }
 
 h2 {
     padding-bottom: 30px;
+    color: #737373
+}
 
+#historyText {
+    margin-top: 50px;
 }
 
 h4 {
     color: #ffffff;
 }
 
+#readyStatus {
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
 
 h2 img {
     width: 2rem;
@@ -85,6 +102,38 @@ button {
     border-radius: 1rem;
     color: white;
     cursor: pointer;
+}
+
+#loginButton {
+    border: 0;
+    padding: 8px 19.2px;
+    font-family: "Jost", sans-serif;
+    ;
+    color: white;
+    cursor: pointer;
+    background: rgb(3, 103, 3);
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+#logoutButton {
+    border: 0;
+    padding: 8px 19.2px;
+    font-family: "Jost", sans-serif;
+    ;
+    color: white;
+    cursor: pointer;
+    background: rgb(177, 92, 92);
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+#historyArea {
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    gap: 30px;
 }
 
 button.save {
@@ -265,13 +314,15 @@ textarea:user-invalid+.validation {
     border-radius: 1rem;
     padding: 1.5rem;
     margin: 1rem 0;
-    background: #ffffff66;
+    background: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: center;
-    gap: 0.5rem;
     text-align: left;
+    max-width: 300px;
+    min-width: 300px;
+
 }
 
 .item-card h3 {
@@ -280,9 +331,28 @@ textarea:user-invalid+.validation {
     color: #333;
 }
 
+.item-display {
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    text-align: left;
+    width: 100%;
+}
+
+.item-display h3 {
+    font-size: 2rem;
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
 .item-heading {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: start;
     justify-content: space-between;
     width: 100%;
@@ -750,6 +820,7 @@ fieldset.filters select {
     justify-content: center;
 
 }
+
 /* from chatgpt/vs code robot 1(end) */
 
 button.save {
@@ -771,6 +842,7 @@ button.reset {
 button.reset:hover {
     background: #bbbbbb;
 }
+
 /* from chatgpt/vs code robot 2(start) */
 #cancelButton {
     background: transparent;
@@ -782,4 +854,5 @@ button.reset:hover {
 #cancelButton:hover {
     background: rgba(255, 255, 255, 0.7);
 }
+
 /* from chatgpt/vs code robot 2(end) */
