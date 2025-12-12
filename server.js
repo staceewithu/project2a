@@ -30,7 +30,7 @@ app.use(express.static('public'))
 app.use(auth(config));
 
 // Define index.html as the root explicitly (useful on Vercel, optional when running Node locally).
-// app.get('/', (req, res) => { res.redirect('/index.html') })
+app.get('/', (req, res) => { res.redirect('/index.html') })
 app.get('/login', (req, res) => {
     if (req.oidc.isAuthenticated()) {
         return res.redirect('/index.html');
