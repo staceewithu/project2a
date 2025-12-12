@@ -6,11 +6,15 @@ import { PrismaClient } from '@prisma/client'
 import pkg from 'express-openid-connect';
 const { auth, requiresAuth } = pkg;
 
+const SCHEMA = "https";
+const HOST = 'project2a.vercel.app';
+const URL = `${SCHEMA}://${HOST}`;
+
 const config = {
     authRequired: false,
     auth0Logout: true,
     secret: 'ejUegog3QZso_nxxT7FJnnR6vlS4mnsp-RA_v0i6L1vHTzNyd_qukUjv9gMlO0OG',
-    baseURL: 'http://localhost:3001',
+    baseURL: URL,
     clientID: 'nCwXGTvKX1fOMf3OpXTXjnt3Z2RIqp9C',
     issuerBaseURL: 'https://dev-5wnlxrykvi2z71cj.us.auth0.com',
     routes: {
@@ -38,7 +42,7 @@ app.get('/login', (req, res) => {
     res.oidc.login({
         returnTo: '/login/callback',
         authorizationParams: {
-            redirect_uri: 'http://localhost:3001/callback',
+            redirect_uri: `${URL}/callback`,
         },
     });
 });
@@ -276,7 +280,7 @@ app.delete('/data/:id', requiresAuth(), async (req, res) => {
 import apiRoutes from './routes/api.js'
 app.use('/', apiRoutes)
 
-const port = 3001
+const port = 443
 app.listen(port, () => {
     console.log(`Express is live at http://localhost:${port}`)
 })
